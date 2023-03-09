@@ -1,10 +1,3 @@
-#!/bin/bash -l
-#BSUB -q normal
-#BSUB -e %J.err
-#BSUB -o %J.out
-#BSUB -n 20      #the maximum is 28 for a typical user
-#BSUB -R "span[ptile=20]"   #the number usually should be consistent with the above
-
 ########################################
 ###THIS SCRIPT will be used to assign taxonomy to assembled contigs 
 # https://github.com/bioinformatics-centre/kaiju
