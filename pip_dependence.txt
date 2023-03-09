@@ -1,0 +1,13 @@
+attrs @ file:///home/conda/feedstock_root/build_artifacts/attrs_1671632566681/work
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
+fancycompleter @ file:///home/conda/feedstock_root/build_artifacts/fancycompleter_1668101491052/work
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1675642519433/work
+pandas==1.5.3
+pdbpp @ file:///home/conda/feedstock_root/build_artifacts/pdbpp_1626016722541/work
+Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1672682006896/work
+pyrepl @ file:///home/conda/feedstock_root/build_artifacts/pyrepl_1668205337296/work
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1673864280276/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1662214488106/work
+wmctrl @ file:///home/conda/feedstock_root/build_artifacts/wmctrl_1619256814824/work
