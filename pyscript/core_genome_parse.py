@@ -86,7 +86,7 @@ def diamond(taxa,contig):#返回的是一个pandas的df对象
         # faapath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/prodigal/{}.megahit.faa".format(args.name)
         faapath=faaPath+"/{}.megahit.faa".format(args.name)
         # extract_contig=os.system("seqkit grep -r -p '{}' {} -o {}.{}.tmp.faa".format(re.search("k.*_.*_",contig).group(1),faapath,outpath,contig))
-        os.system("seqkit grep -r -p '{}' {} -o {}/{}.tmp.faa".format(contig,faapath,contig_dir,contig))
+        os.system("seqkit grep -r -p '{}_' {} -o {}/{}.tmp.faa".format(contig,faapath,contig_dir,contig))
         index=os.listdir(indexpath)
         # index=list(map(lambda x:os.path.basename(x)),getlist)
 
