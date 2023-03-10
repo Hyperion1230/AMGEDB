@@ -46,7 +46,7 @@ def read_taxonomy(path):
         if str(x)=="nan":
             return
         else:
-            # out=x.split(';')
+            out=x.split(';')
             out=x[1:]
             return str(out)
     handle = pandas.read_csv(path, sep='\t', header=None)
