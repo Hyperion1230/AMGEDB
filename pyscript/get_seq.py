@@ -25,7 +25,7 @@ def get_seq_local(left,right,faa_path,contig):
         table=os.popen("cat {} |grep '{}'".format(faa_path,contig)).read()
         tableIO = io.StringIO(table)
         df= pandas.read_csv(tableIO,sep="#",header=None,dtype=str)
-        seq = [df.iloc[0, 0], df.iloc[eval(left), 1], df.iloc[eval(right), 2]]
+        seq = [df.iloc[0, 0], df.iloc[eval(left)-1, 1], df.iloc[eval(right)-1, 2]]
         seq[0] = re.search(">.*_.*_", seq[0]).group()[:-1]
         return seq
     except:
