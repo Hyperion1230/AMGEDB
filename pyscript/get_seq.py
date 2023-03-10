@@ -39,7 +39,7 @@ def get_seq(start,over,contig,contig_path,outpath):
         a.write(contig)
         a.close()
         print("seqkit grep -f {}/list.txt {}/final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
-        t=os.popen("seqkit grep -f {}/list.txt {}/.final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
+        t=os.popen("seqkit grep -f {}/list.txt {}/final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
         # time.sleep(1)
     return
 
