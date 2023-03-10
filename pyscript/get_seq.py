@@ -21,12 +21,16 @@ def parse(table,faa,contig,outpath):
 def get_seq_local(left,right,faa_path,contig):
     # faa_path=1
     # faa_path = faaPath + "/{}.megahit.faa".format(args.name)
-    table=os.popen("cat {} |grep '{}'".format(faa_path,contig)).read()
-    tableIO = io.StringIO(table)
-    df= pandas.read_csv(tableIO,sep="#",header=None,dtype=str)
-    seq = [df.iloc[0, 0], df.iloc[eval(left), 1], df.iloc[eval(right), 2]]
-    seq[0] = re.search(">.*_.*_", seq[0]).group()[:-1]
-    return seq
+    try:
+        table=os.popen("cat {} |grep '{}'".format(faa_path,contig)).read()
+        tableIO = io.StringIO(table)
+        df= pandas.read_csv(tableIO,sep="#",header=None,dtype=str)
+        seq = [df.iloc[0, 0], df.iloc[eval(left), 1], df.iloc[eval(right), 2]]
+        seq[0] = re.search(">.*_.*_", seq[0]).group()[:-1]
+        return seq
+    except:
+        pdb.set_trace()
+
 def get_seq(start,over,contig,contig_path,outpath):
     if eval(start)>eval(over):
         start,over=over,start
@@ -34,7 +38,7 @@ def get_seq(start,over,contig,contig_path,outpath):
         a=open(seq_dir+"/list.txt","w")
         a.write(contig)
         a.close()
-        print("seqkit grep -f {}/list.txt {}/.final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
+        print("seqkit grep -f {}/list.txt {}/final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
         t=os.popen("seqkit grep -f {}/list.txt {}/.final.contig_1000.fa |seqkit subseq -r {}:{} -o {}/{}.fasta".format(seq_dir,contig_path,eval(start),eval(over),outpath,contig))
         # time.sleep(1)
     return
