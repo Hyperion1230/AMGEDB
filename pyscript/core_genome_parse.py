@@ -226,7 +226,7 @@ if __name__=="__main__":
         if os.path.exists("{}/{}.MGE.txt".format(args.out,args.name)):
             break
         M1 = open("{}/{}.MGE.txt".format(args.out,args.name), "w")
-        record='#ICEidentification——result：\ncontig\tspecies\tcore1\trecombinase\tconj\tcore2\tintegrity\tclass\n'
+        record='#ice_identification——result：\ncontig\tspecies\tcore1\trecombinase\tconj\tcore2\tintegrity\tclass\n'
         dict1=zip(taxa2['contig'],taxa2["taxa"])
         for tup in tqdm.tqdm(dict1,total=len(taxa2)):
             # print(tup[0])
