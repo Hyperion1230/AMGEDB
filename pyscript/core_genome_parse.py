@@ -264,7 +264,7 @@ if __name__=="__main__":
 
                     if eval(re_local)>local[0] and eval(re_local) < local[-1]:
                         # pdb.set_trace()
-                        local_pair=get_local(local,re_local,T4SS_local)
+                        local_pair=get_local(local,re_local,T4SS_local.sort())
                         record=record+tup[0]+"\t"+tup[1]+"\t"+str(local_pair[0])+"\t"+re_local+"\t"+local_pair[4]+"\t"+str(local_pair[1])+"\t"+local_pair[2]+"\t"+local_pair[3]+'\n'
                         # print(record)
 
