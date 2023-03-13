@@ -278,5 +278,4 @@ if __name__=="__main__":
         print("statistics：\nhmm_contig:{}\nmacsy:{}\nkaiju_record:{}\n".format(len(contig_list),len(T4SS_list),len(taxa)))
         print('done')
         exit()
-        # for hmmout_path in os.listdir(args.faa):
-        #     diamond()
+
