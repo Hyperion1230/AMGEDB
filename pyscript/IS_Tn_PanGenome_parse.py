@@ -1,6 +1,6 @@
 import core_genome_parse as CGP
 import argparse
-import os
+import os,pdb
 import re
 from tqdm import tqdm
 parser = argparse.ArgumentParser(description='A program used to analyze the core genes of MGE', epilog="version   0.1.0")
@@ -14,7 +14,6 @@ parser.add_argument('--diamond_index_path','-dip', dest='Diamondindexpath', type
 # parser.add_argument('--faapath', dest='faapath', type=str, help='faapath path',required=1)
 parser.add_argument('--taxa',  dest='taxa', type=str, help='taxa path',required=1)
 parser.add_argument('--annopath','-ap',dest='annoPath',type=str, help="pangenome anno data dir",required=1)
-# parser.add_argument('--macsydir','-mp',dest='macsy',type=str,help="macsy result dir",required=1)
 parser.add_argument('--name','-n', dest='name', type=str, help='out name',required=1)
 
 args = parser.parse_args()
@@ -33,6 +32,7 @@ hmmout = hmmoutPath + "/{}.megahit.faa_{}.hmm.hmmout".format(args.name, os.path.
 taxa = CGP.read_taxonomy(taxaPath)
 contig_list_raw = CGP.extracth(hmmout)
 contig_list=list(map(lambda x:(re.search(".*?_\d+",x).group(0)),contig_list_raw))
+pdb.set_trace()
 taxa2=taxa[taxa['contig'].isin(contig_list)]
 if os.path.exists(args.out):
     pass

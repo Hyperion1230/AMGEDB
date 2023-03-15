@@ -17,7 +17,7 @@ parser.add_argument('--diamond_index_path','-dip', dest='Diamondindexpath', type
 # parser.add_argument('--faapath', dest='faapath', type=str, help='faapath path',required=1)
 parser.add_argument('--taxa',  dest='taxa', type=str, help='taxa path',required=1)
 parser.add_argument('--annopath','-ap',dest='annoPath',type=str, help="pangenome anno data dir",required=1)
-parser.add_argument('--macsydir','-mp',dest='macsy',type=str,help="macsy result dir",required=1)
+#parser.add_argument('--macsydir','-mp',dest='macsy',type=str,help="macsy result dir",required=1)
 parser.add_argument('--name','-n', dest='name', type=str, help='out name',required=1)
 
 args = parser.parse_args()
@@ -26,7 +26,7 @@ args = parser.parse_args()
 diamond_index=args.Diamondindexpath
 faaPath=args.faa
 annoPath=args.annoPath
-macsyPath=args.macsy
+#macsyPath=args.macsy
 hmmoutPath=args.hmmout
 kaijuPath=args.taxa
 
@@ -128,7 +128,7 @@ def extracth(hmmout):#提取hmm文件中比对上的数据
     fileIO=io.StringIO(hmmoutExtract[:finalLine])
     try:
         warnings.filterwarnings("ignore")
-        table=pandas.read_csv(fileIO,'\s+',error_bad_lines=False,index_col=False,comment="#").dropna().T.T#errorbadlines之后的版本将被废弃
+        table=pandas.read_csv(fileIO,'\s+',error_bad_lines=False,index_col=False).dropna().T.T#errorbadlines之后的版本将被废弃
         table=table[table['-------'].astype('float')<0.00673]
         list1=numpy.array(table.iloc[:,8:9])
         list2=list1.reshape(len(list1),)
@@ -158,8 +158,8 @@ def sort_core(annopath,diamond_out):
     getlocal=set(df1['contig'])
     contigset = list(map(lambda x: eval(x.split("_")[2]), getlocal))
     # pdb.set_trace()
-    contigset.sort()
-    return contigset
+    #contigset.sort()
+    return set(contigset)
 
 def get_local(local_list , re_local_num , T_local):
     tag='complete'
