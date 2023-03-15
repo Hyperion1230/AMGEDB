@@ -49,9 +49,10 @@ with open("{}/{}.MGE.txt".format(args.out,args.name), "w") as handle:
         else:
             vel = tup[1].split(" ")
             df = CGP.diamond(vel, tup[0])
-            if df[0].__str__() == "NO": continue
+            if df.__str__() == "NO": continue
             for i in contig_list:
                 if tup[0] in i:
+
                     locals = CGP.sort_core(vel, df)
                     break
                 for contig in contig_list_raw:
