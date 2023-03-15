@@ -23,7 +23,7 @@ args = parser.parse_args()
 diamond_index=args.Diamondindexpath
 faaPath=args.faa
 annoPath=args.annoPath
-macsyPath=args.macsy
+# macsyPath=args.macsy
 hmmoutPath=args.hmmout
 kaijuPath=args.taxa
 
