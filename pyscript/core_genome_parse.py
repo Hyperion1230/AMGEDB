@@ -128,7 +128,7 @@ def extracth(hmmout):#提取hmm文件中比对上的数据
     fileIO=io.StringIO(hmmoutExtract[:finalLine])
     try:
         warnings.filterwarnings("ignore")
-        table=pandas.read_csv(fileIO,'\s+',error_bad_lines=False,index_col=False).dropna().T.T#errorbadlines之后的版本将被废弃
+        table=pandas.read_csv(fileIO,'\s+',error_bad_lines=False,index_col=False,comment="#").dropna().T.T#errorbadlines之后的版本将被废弃
         table=table[table['-------'].astype('float')<0.00673]
         list1=numpy.array(table.iloc[:,8:9])
         list2=list1.reshape(len(list1),)
