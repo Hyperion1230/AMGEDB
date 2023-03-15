@@ -116,7 +116,7 @@ def diamond(taxa,contig):#返回的是一个pandas的df对象
                     dim_table=dim_table.rename(columns={0: "contig", 1: 'Cluster'})
                     dim_table["Cluster"] = dim_table.Cluster.map(lambda x: re.search(".*_\d+", x).group(0))
                     # os.system("rm -f ./*tmp*")
-                    return dim_table
+                    return dim_table,taxa_targe
         # os.system("rm -f ./*tmp*")
         return "NO"
 def extracth(hmmout):#提取hmm文件中比对上的数据
@@ -152,9 +152,9 @@ def sort_core(annopath,diamond_out):
     #         if annopath[1] in i:
     # annopath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Pangenome/annotation/csv/*."
     annopath=annoPath+"/*."
-    annopath=glob.glob(annopath+taxa_targe+"*")
+    annopath=glob.glob(annopath+diamond_out[1]+"*")
     core_set=parser_pangenome(annopath[0])
-    df1=diamond_out[diamond_out['Cluster'].isin(core_set)]
+    df1=diamond_out[0][diamond_out[0]['Cluster'].isin(core_set)]
     getlocal=set(df1['contig'])
     contigset = list(map(lambda x: eval(x.split("_")[2]), getlocal))
     # pdb.set_trace()
@@ -250,7 +250,7 @@ if __name__=="__main__":
                         #     break
                     vel=tup[1].split(" ")
                     df=diamond(vel,tup[0])
-                    if df.__str__()=="NO":continue
+                    if df[0].__str__()=="NO":continue
                     for i in contig_list:
                         if tup[0] in i:
                             local=sort_core(vel,df)
