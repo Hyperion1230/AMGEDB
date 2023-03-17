@@ -17,18 +17,12 @@ parser.add_argument('--diamond_index_path','-dip', dest='Diamondindexpath', type
 # parser.add_argument('--faapath', dest='faapath', type=str, help='faapath path',required=1)
 parser.add_argument('--taxa',  dest='taxa', type=str, help='taxa path',required=1)
 parser.add_argument('--annopath','-ap',dest='annoPath',type=str, help="pangenome anno data dir",required=1)
-#parser.add_argument('--macsydir','-mp',dest='macsy',type=str,help="macsy result dir",required=1)
+parser.add_argument('--macsydir','-mp',dest='macsy',type=str,help="macsy result dir")
 parser.add_argument('--name','-n', dest='name', type=str, help='out name',required=1)
 
-args = parser.parse_args()
 
-######参数处理#######
-diamond_index=args.Diamondindexpath
-faaPath=args.faa
-annoPath=args.annoPath
-#macsyPath=args.macsy
-hmmoutPath=args.hmmout
-kaijuPath=args.taxa
+
+
 
 ####################
 class MGE:
@@ -193,6 +187,14 @@ def macsy_parse(path):
     return set(ls1)
 
 if __name__=="__main__":
+    ######参数处理#######
+    args = parser.parse_args()
+    diamond_index = args.Diamondindexpath
+    faaPath = args.faa
+    annoPath = args.annoPath
+    macsyPath=args.macsy
+    hmmoutPath = args.hmmout
+    kaijuPath = args.taxa
     #收集所有contig的物种信息
     while 0:
         taxalist=set()
