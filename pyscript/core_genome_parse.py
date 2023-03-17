@@ -74,7 +74,6 @@ def parser_pangenome(outpath):
 def diamond(taxa,contig):#返回的是一个pandas的df对象
     #pdb.set_trace()
     with tempfile.TemporaryDirectory() as contig_dir:#临时文件不再保留
-        # faa_path="faa path"
         # indexpath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Pangenome/diamond_index/"
         indexpath=diamond_index
         # faapath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/prodigal/{}.megahit.faa".format(args.name)
@@ -109,16 +108,13 @@ def diamond(taxa,contig):#返回的是一个pandas的df对象
 
                     dim_table=dim_table.rename(columns={0: "contig", 1: 'Cluster'})
                     dim_table["Cluster"] = dim_table.Cluster.map(lambda x: re.search(".*_\d+", x).group(0))
-                    # os.system("rm -f ./*tmp*")
                     return dim_table,taxa_targe
-        # os.system("rm -f ./*tmp*")
         return "NO"
 def extracth(hmmout):#提取hmm文件中比对上的数据
     #这个部分比较不稳定，会受到hmmout文件格式的影响
     #但是目前情况下运行还是比较稳定的
     hmmoutExtract=os.popen('sed -n {},99999999999p {}'.format(15, hmmout)).read()#如果使用的是PFAM的hmm模型就要改成17，其他的用15
     finalLine = hmmoutExtract.find('Domain', 1)
-    # tt=hmmoutExtract[0:finalLine-3]
     fileIO=io.StringIO(hmmoutExtract[:finalLine])
     try:
         warnings.filterwarnings("ignore")
@@ -131,7 +127,7 @@ def extracth(hmmout):#提取hmm文件中比对上的数据
         traceback.print_exc()
         return 'no'
 
-def group_taxa(list,kaijudict):
+def group_taxa(list,kaijudict):# abandon def
     for item in list:
         taxamony_1=kaijudict[item]
         if taxamony_1=="NA":
@@ -139,11 +135,6 @@ def group_taxa(list,kaijudict):
         else:
             df=pandas.DataFrame(kaijudict)
 def sort_core(annopath,diamond_out):
-    # getlist = os.listdir("annon dir path")
-    # index = list(map(lambda x: os.path.basename(x)), getlist)
-    # for i in index:
-    #     if annopath[0] in i:
-    #         if annopath[1] in i:
     # annopath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Pangenome/annotation/csv/*."
     annopath=annoPath+"/*."
     annopath=glob.glob(annopath+diamond_out[1]+"*")
@@ -151,13 +142,11 @@ def sort_core(annopath,diamond_out):
     df1=diamond_out[0][diamond_out[0]['Cluster'].isin(core_set)]
     getlocal=set(df1['contig'])
     contigset = list(map(lambda x: eval(x.split("_")[2]), getlocal))
-    # pdb.set_trace()
-    #contigset.sort()
-    return set(contigset)
+    return set(contigset)#maybe use set() can sort the list?
 
 def get_local(local_list , re_local_num , T_local):
     tag='complete'
-    for local in local_list:
+    for local in local_list:# Judge position
         if local < eval(re_local_num):
             left=local
         elif local == eval(re_local_num):
@@ -167,9 +156,9 @@ def get_local(local_list , re_local_num , T_local):
         else:
             right=local
             break
-    if len(T_local)==0:MGE_class='ME';T1="NONE"
+    if len(T_local)==0:MGE_class='ME';T1="NONE"#if haven't T4SS system contig
     for T in T_local:
-        if eval(T)>=left and eval(T)<=right:
+        if eval(T)>=left and eval(T)<=right:#T4SS sys inside nocore gene island
             MGE_class="ICE"
             T1=T
             break
@@ -182,8 +171,6 @@ def macsy_parse(path):
     df = pandas.read_csv(path, header=0, comment='#', sep='\t')
     df = df[df['gene_name'].str.contains("T4SS")]
     ls1=df["hit_id"].to_list()
-    # ls2=list(map(lambda x:(re.search(".*?_\d+",x).group(0)),ls1))
-    # dict_contig_T4SS={"cname":ls1,"name":ls2}
     return set(ls1)
 
 if __name__=="__main__":
@@ -218,6 +205,7 @@ if __name__=="__main__":
         # contig_list_raw = extracth("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/hmmout/ser_lsr/{}.megahit.faa_ser_lsr.hmm.hmmout".format(args.name))
         contig_list_raw = extracth(hmmout)
         contig_list=list(map(lambda x:(re.search(".*?_\d+",x).group(0)),contig_list_raw))
+        # contig_list=list(map(lambda x:(re.search(".*?__\d+",x).group(0)),contig_list_raw))#for some special data，e.g Yin_data
         taxa2=taxa[taxa['contig'].isin(contig_list)]
         # T4SS_list=macsy_parse("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/macsy/{}.megahit.faa/all_systems.tsv".format(args.name))
         T4SS_list = macsy_parse(macsyPath+"/{}.megahit.faa/all_systems.tsv".format(args.name))
@@ -245,11 +233,6 @@ if __name__=="__main__":
                         if tup[0]+"_" in T4SS_contig:
                             # print(tup[0],T4SS_contig)
                             T4SS_local.append(T4SS_contig.split("_")[2])
-                        #     t0=1
-                        #     # continue
-                        # elif (t0==1) and (tup[0] not in T4SS_contig):
-                        #     # T4SS_local=-1
-                        #     break
                     vel=tup[1].split(" ")
                     df=diamond(vel,tup[0])
                     if df[0].__str__()=="NO":continue
