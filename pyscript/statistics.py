@@ -3,10 +3,10 @@ import os,re,glob
 
 def parse_txt(path):
     name=re.search(".*/(.*?).MGE",path).group(1)
-    with pd.read_csv(path,commit="#",sep="\t") as handle:
-        ME_num=len(handle[handle["class"].str.contains("ME")])
-        ICE_num=len(handle)-ME_num
-        record=name+"\t"+ICE_num+"\t"+ME_num+"\n"
+    handle=pd.read_csv(path,comment="#",sep="\t")
+    ME_num=len(handle[handle["class"].str.contains("ME")])
+    ICE_num=len(handle)-ME_num
+    record=name+"\t"+str(ICE_num)+"\t"+str(ME_num)+"\n"
     return record
 
 record="sample_name"+"\t"+"ICE"+"\t"+"ME"+'\n'
