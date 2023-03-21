@@ -9,9 +9,9 @@ def parse_txt(path):
         record=name+"\t"+ICE_num+"\t"+ME_num+"\n"
     return record
 
-record="sample_name"+"\t"+"ICE"+"\t"+"ME"
+record="sample_name"+"\t"+"ICE"+"\t"+"ME"+'\n'
 for path in glob.glob(input('路径')):
-    record=parse_txt(path)
+    record=record+parse_txt(path)
 with open("./statistic.tsv","w") as handle:
     handle.write(record)
 print("done")
