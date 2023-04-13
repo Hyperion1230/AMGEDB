@@ -4,7 +4,7 @@ import argparse
 import pandas
 import tempfile
 import Download_panGenome as DP
-
+from numba import jit
 ##############初始化##################
 parser = argparse.ArgumentParser(description='A program used to analyze the core genes of MGE', epilog="version   0.1.0")
 parser.add_argument('--url', '-u', dest='url', type=str, nargs="+", help='url table')
@@ -126,6 +126,16 @@ def extracth(hmmout):#提取hmm文件中比对上的数据
     except:
         traceback.print_exc()
         return 'no'
+def extracth_new(hmmout):
+    try:
+        table=pandas.read_csv(hmmout,comment="#",sep='\s+',dtype='str',prefix="#",header=None)
+        table=table[table['#4'].astype('float')<0.00673]
+        table=table["#0"]
+        list_1=table.tolist()
+        return list_1
+    except:
+        traceback.print_exc()
+        return 'no'
 
 def group_taxa(list,kaijudict):# abandon def
     for item in list:
@@ -143,7 +153,7 @@ def sort_core(annopath,diamond_out):
     getlocal=set(df1['contig'])
     contigset = list(map(lambda x: eval(x.split("_")[2]), getlocal))
     return set(contigset)#maybe use set() can sort the list?
-
+@jit()
 def get_local(local_list , re_local_num , T_local):
     tag='complete'
     for local in local_list:# Judge position
@@ -203,7 +213,7 @@ if __name__=="__main__":
         # taxa = read_taxonomy("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Species_annotation/kaijuname/{}_kaiju_names.txt".format(args.name))
         taxa = read_taxonomy(taxaPath)
         # contig_list_raw = extracth("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/hmmout/ser_lsr/{}.megahit.faa_ser_lsr.hmm.hmmout".format(args.name))
-        contig_list_raw = extracth(hmmout)
+        contig_list_raw = extracth_new(hmmout)
         contig_list=list(map(lambda x:(re.search(".*?_\d+",x).group(0)),contig_list_raw))
         # contig_list=list(map(lambda x:(re.search(".*?__\d+",x).group(0)),contig_list_raw))#for some special data，e.g Yin_data
         taxa2=taxa[taxa['contig'].isin(contig_list)]
