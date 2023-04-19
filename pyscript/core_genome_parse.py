@@ -77,7 +77,7 @@ def diamond(taxa,contig):#返回的是一个pandas的df对象
         # indexpath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Pangenome/diamond_index/"
         indexpath=diamond_index
         # faapath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/prodigal/{}.megahit.faa".format(args.name)
-        faapath=faaPath+"/{}.megahit.faa".format(args.name)
+        faapath=faaPath+"/{}/protein.faa".format(args.name)
         # extract_contig=os.system("seqkit grep -r -p '{}' {} -o {}.{}.tmp.faa".format(re.search("k.*_.*_",contig).group(1),faapath,outpath,contig))
         os.system("seqkit grep -r -p '{}_' {} -o {}/{}.tmp.faa".format(contig,faapath,contig_dir,contig))
         index=os.listdir(indexpath)
@@ -108,7 +108,7 @@ def diamond(taxa,contig):#返回的是一个pandas的df对象
 
                     dim_table=dim_table.rename(columns={0: "contig", 1: 'Cluster'})
                     dim_table["Cluster"] = dim_table.Cluster.map(lambda x: re.search(".*_\d+", x).group(0))
-                    return dim_table,taxa_targe
+                    return dim_table
         return "NO"
 def extracth(hmmout):#提取hmm文件中比对上的数据
     #这个部分比较不稳定，会受到hmmout文件格式的影响
@@ -147,14 +147,16 @@ def group_taxa(list,kaijudict):# abandon def
 def sort_core(annopath,diamond_out):
     # annopath="/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Pangenome/annotation/csv/*."
     annopath=annoPath+"/*."
-    annopath=glob.glob(annopath+diamond_out[1]+"*")
+    annopath=glob.glob(annopath+taxa_targe+"*")
     core_set=parser_pangenome(annopath[0])
-    df1=diamond_out[0][diamond_out[0]['Cluster'].isin(core_set)]
+    # pdb.set_trace()
+    df1=diamond_out[diamond_out['Cluster'].isin(core_set)]
     getlocal=set(df1['contig'])
     contigset = list(map(lambda x: eval(x.split("_")[2]), getlocal))
-    return set(contigset)#maybe use set() can sort the list?
-@jit()
+    return list(set(contigset))#maybe use set() can sort the list?
+
 def get_local(local_list , re_local_num , T_local):
+    # global MGE_class
     tag='complete'
     for local in local_list:# Judge position
         if local < eval(re_local_num):
@@ -166,7 +168,10 @@ def get_local(local_list , re_local_num , T_local):
         else:
             right=local
             break
-    if len(T_local)==0:MGE_class='ME';T1="NONE"#if haven't T4SS system contig
+    if T_local is None or T_local==[]:
+        MGE_class='ME'
+        T1="NONE"
+        return [left,right,tag,MGE_class,T1]#if haven't T4SS system contig
     for T in T_local:
         if eval(T)>=left and eval(T)<=right:#T4SS sys inside nocore gene island
             MGE_class="ICE"
@@ -209,8 +214,10 @@ if __name__=="__main__":
     ######比对########
     while 1:
         taxaPath=kaijuPath+"/{}_kaiju_names.txt".format(args.name)
-        hmmout=hmmoutPath+"/{}.megahit.faa_{}.hmm.hmmout".format(args.name,os.path.basename(args.hmmout))
+        # hmmout=hmmoutPath+"/{}.megahit.faa_{}.hmm.hmmout".format(args.name,os.path.basename(args.hmmout))
+        hmmout = hmmoutPath + "/{}/ser_lsr.tbl".format(args.name)
         # taxa = read_taxonomy("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/Species_annotation/kaijuname/{}_kaiju_names.txt".format(args.name))
+
         taxa = read_taxonomy(taxaPath)
         # contig_list_raw = extracth("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/hmmout/ser_lsr/{}.megahit.faa_ser_lsr.hmm.hmmout".format(args.name))
         contig_list_raw = extracth_new(hmmout)
@@ -218,7 +225,7 @@ if __name__=="__main__":
         # contig_list=list(map(lambda x:(re.search(".*?__\d+",x).group(0)),contig_list_raw))#for some special data，e.g Yin_data
         taxa2=taxa[taxa['contig'].isin(contig_list)]
         # T4SS_list=macsy_parse("/gss1/home/liujx02/tangyj/proj_MGEdatabase/Gao_data/macsy/{}.megahit.faa/all_systems.tsv".format(args.name))
-        T4SS_list = macsy_parse(macsyPath+"/{}.megahit.faa/all_systems.tsv".format(args.name))
+        T4SS_list = macsy_parse(macsyPath+"/{}/macsy/all_systems.tsv".format(args.name))
         if os.path.exists(args.out):
             pass
         else:
@@ -245,7 +252,7 @@ if __name__=="__main__":
                             T4SS_local.append(T4SS_contig.split("_")[2])
                     vel=tup[1].split(" ")
                     df=diamond(vel,tup[0])
-                    if df[0].__str__()=="NO":continue
+                    if df.__str__()=="NO":continue
                     for i in contig_list:
                         if tup[0] in i:
                             local=sort_core(vel,df)
@@ -259,7 +266,8 @@ if __name__=="__main__":
 
                     if eval(re_local)>local[0] and eval(re_local) < local[-1]:
                         # pdb.set_trace()
-                        local_pair=get_local(local,re_local,T4SS_local.sort())
+                        # T4SS_local.sort()
+                        local_pair=get_local(local,re_local,T4SS_local)
                         record=record+tup[0]+"\t"+tup[1]+"\t"+str(local_pair[0])+"\t"+re_local+"\t"+local_pair[4]+"\t"+str(local_pair[1])+"\t"+local_pair[2]+"\t"+local_pair[3]+'\n'
                         # print(record)
 
@@ -273,4 +281,4 @@ if __name__=="__main__":
         print("statistics：\nhmm_contig:{}\nmacsy:{}\nkaiju_record:{}\n".format(len(contig_list),len(T4SS_list),len(taxa)))
         print('done')
         exit()
-
+open().read()
