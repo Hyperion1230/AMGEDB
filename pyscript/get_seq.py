@@ -8,13 +8,13 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%a %d %b %Y %H:%M:%S',
                     filename='my.log',
                     filemode='w')
-
 from functools import wraps
 parser = argparse.ArgumentParser(description='It is used to extract contig fragments corresponding to MGE', epilog="version   0.1.0")
 parser.add_argument('--table', '-t', dest='table', type=str, help='mge table',required=1)
 parser.add_argument('--contig_files', '-c', dest='contig', type=str, help='contig file local',required=1)
 parser.add_argument('--faa_file', '-f', dest='faa', type=str, help='faa path',required=1)
 parser.add_argument('--out', '-o', dest='out', type=str, help='out dir', default=".")
+
 def timer(func):
     @wraps(func)
     def inner(*args, **kwargs):
